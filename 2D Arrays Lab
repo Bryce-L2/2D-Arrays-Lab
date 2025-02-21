@@ -1,98 +1,150 @@
+/*
+Bryce Lombardo
+2D Arrays Lab
+2/15/2025
+Extra: Added a history class 
+*/
+
 #include <iostream>
 #include <ctime>
 
 using namespace std;
 
-const int rows = 10;
-const int cols = 10;
-int maxships = 10;
-int guesses = 50;
-
-int matrix[rows][cols];
-
-void Clear() {
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            matrix[i][j] = 0;
+int main() {
+    //getting the seed for the random 
+    srand(time(0));
+// Question 4 
+    // getting the numbers for how many rows and colums 
+    int rows1 = 5;   
+    int colums1 = 5;
+    int randArray1[rows1][colums1];
+    
+//for loop to fill the 2d array with numbers 
+    for (int i = 0; i < rows1; ++i) {
+        for (int j = 0; j < colums1; ++j) {
+            randArray1[i][j] = rand() % 50 + 1;  
         }
     }
-}
-
-void Show() {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            cout << matrix[i][j] << " ";
+    //printing out the original matrixs going through each row and colum to get ever number and printng them in a box 
+    cout << "Original matrix:" << endl;
+    for (int i = 0; i < rows1; ++i) {
+        for (int j = 0; j < colums1; ++j) {
+            cout << randArray1[i][j] << "\t";
         }
+        //makes a space inbetween each digit and makes it print correctly 
         cout << endl;
     }
-}
-
-int numShips() {
-    int c = 0;
-
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (matrix[i][j] == 1) 
-                c++;
-            
+    //not really sure how his works had to ask nate but it gets the highest number and max index of the rows and colums 
+    int maxElement = randArray1[0][0];
+    int maxRow = 0;
+    int maxCol = 0;
+    
+    //nested for loop to get the numbers not really sure what an index is though. 
+    for (int i = 0; i < rows1; ++i) {
+        for (int j = 0; j < colums1; ++j) {
+            if (randArray1[i][j] > maxElement) {
+                maxElement = randArray1[i][j];
+                maxRow = i;
+                maxCol = j;
+            }
         }
     }
-    return c;
-}
+    //prints the indexs and highest number 
+    cout << "\nMax number: " << maxElement << endl;
+    cout << "Row Index: " << maxRow << endl;
+    cout << "Column Index: " << maxCol << endl;
 
-void SetShips() {
-    int s = 0;
-    while (s < maxships) {
-        int x = rand() % rows;
-        int y = rand() % cols;
-        if (matrix[x][y] != 1) {
-            s++;
-            matrix[x][y] = 1;
+// Question 5
+    //4x4 2d array 
+     int rows2 = 4;   
+     int colums2 = 4; 
+    int randArray2[rows2][colums2];
+//puting the random nmbers in the arrays 
+    for (int i = 0; i < rows2; ++i) {
+        for (int j = 0; j < colums2; ++j) {
+            randArray2[i][j] = rand() % 100 + 1;  
         }
     }
-}
-
-bool attack(int x, int y) {
-    if (matrix[x][y] == 1) {
-        matrix[x][y] = 2;
-        return true;
+    //prints the original matric using the rested for loop
+    cout << "\nOriginal matrix:" << endl;
+    for (int i = 0; i < rows2; ++i) {
+        for (int j = 0; j < colums2; ++j) {
+            cout << randArray2[i][j] << "\t";
+        }
+        //makes a space inbetween each digit and makes it print correctly 
+        cout << endl;
     }
-    return false;
-}
+// nested for loop goes through each row and calcualtes the sum for just that row then goes to the next row and does the same 
+    cout << "\nSum and average of each row:" << endl;
+    for (int i = 0; i < rows2; ++i) {
+        int rowSum = 0;
+        for (int j = 0; j < colums2; ++j) {
+            rowSum += randArray2[i][j];
+        }
+        //average is the sum divided by how many elements are in the row 
+        double rowAverage = rowSum / (double)colums2;
+        cout << "Row " << i + 1 << ": Sum = " << rowSum << ", Average = " << rowAverage << endl;
+    }
+    //does the same thing except the colums instead of the rows 
+    cout << "\nSum and average of each column:" << endl;
+    for (int j = 0; j < colums2; ++j) {
+        int columSum = 0;
+        for (int i = 0; i < rows2; ++i) {
+            columSum += randArray2[i][j];
+        }
+        // sum of colums divided by the amount of eements 
+        double columAverage = columSum / (double)rows2;
+        cout << "Column " << j + 1 << ": Sum = " << columSum << ", Average = " << columAverage << endl;
+    }
+    
+// Question 6 
+// 5x4 2d array 
+    int rows3 = 5;
+    int columns3 = 4;  
+    int randArray3[rows3][columns3];
 
-int main()
-{
-    srand(time(NULL));
-    Clear();
-    SetShips();
-    int pos1, pos2;
-    char prompt;
-    cout << "To see number of ships left type s into the prompt \nTo see number of guesses left type g into the prompt \nTo surrender type y into the prompt" << endl;
-    while (1) {
-        
-        cout << "\nEnter where would you like to attack: ";
-        guesses--;
-        cin >> pos1 >> pos2;
-        if (attack(pos1, pos2))
-            cout << "Hit" << endl;
-        else
-            cout << "Miss" << endl;
-        cout << "\nWould you like to do anything? Enter (s/g/y) or n to not do anything. ";
-        cin >> prompt;
-        if (prompt == 'y' || prompt == 'Y') {
-            cout << "Game over \nHere was the enemy poitions: " << endl;
-            Show();
-            break;
-        }
-        if (prompt == 's' || prompt == 'S') {
-            cout << "\nThere are " << numShips() << " ships left." << endl;
-        }
-        if (prompt == 'g' || prompt == 'G') {
-            cout << "You have " << guesses << " guesses left." << endl;
+     
+//gets the random numbers 50-100
+    for (int i = 0; i < rows3; ++i) {
+        for (int j = 0; j < columns3; ++j) {
+            randArray3[i][j] = rand() % 51 + 50;
         }
     }
+    // prints out the titles and uses the for loop to print the 2d array under the math science english and history 
+    cout << "\nTest scores:\n";
+    cout << "Math\tEnglish\tScience\tHistory\n";  
+    for (int i = 0; i < rows3; ++i) {
+        for (int j = 0; j < columns3; ++j) {
+            cout << randArray3[i][j] << "\t";
+        }
+        //makes a space inbetween each digit and makes it print correctly 
+        cout << endl;
+    }
+//prints out the averages by going through each colum getting the sum and dividing by how many numbers are in it 
+    cout << "\nAverages:\n";
+    for (int j = 0; j < columns3; ++j) {
+        int sum = 0;
+        for (int i = 0; i < rows3; ++i) {
+            sum += randArray3[i][j];
+        }
+//used a switch statment because j has colums which are math english science and history starting with 0 
+        switch (j) {
+            case 0: 
+                cout << "Math: ";
+                break;
+            case 1:
+                cout << "English: ";
+                break;
+            case 2:
+                cout << "Science: ";
+                break;
+            case 3:
+                cout << "History: ";  
+                break;
+        }
+        //prints out the average of the colums
+        cout << (sum / (double)rows3) << endl;  
+    }
 
+    return 0;
 }
-
-
